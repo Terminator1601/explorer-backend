@@ -15,6 +15,7 @@ from app.models import User, Event, EventParticipant  # noqa: F401
 from app.api.routes_auth import router as auth_router
 from app.api.routes_users import router as users_router
 from app.api.routes_events import router as events_router
+from app.api.routes_uploads import router as uploads_router
 
 
 @asynccontextmanager
@@ -41,6 +42,7 @@ app.add_middleware(
 app.include_router(auth_router)
 app.include_router(users_router)
 app.include_router(events_router)
+app.include_router(uploads_router)
 
 
 @app.get("/health")

@@ -70,6 +70,30 @@ In your backend service, add/update these variables:
 - `JWT_SECRET_KEY` = strong random secret
 - `JWT_ALGORITHM` = `HS256` (optional, default already set)
 - `ACCESS_TOKEN_EXPIRE_MINUTES` = `60` (optional)
+- `CLOUDINARY_CLOUD_NAME` = your Cloudinary cloud name
+- `CLOUDINARY_API_KEY` = your Cloudinary API key
+- `CLOUDINARY_API_SECRET` = your Cloudinary API secret
+- `CLOUDINARY_UPLOAD_FOLDER` = folder name for uploaded files (optional, default `event-explorer`)
+
+## Media Upload (Cloudinary)
+
+Use the authenticated endpoint below to upload images or videos:
+
+- `POST /uploads/media`
+- `Authorization: Bearer <access_token>`
+- `Content-Type: multipart/form-data`
+- Form field: `file`
+
+Response includes the Cloudinary hosted URL (`url`) and metadata (resource type, dimensions, duration for videos, etc.).
+
+Profile picture upload and save in one call:
+
+- `POST /users/me/profile-picture`
+- `Authorization: Bearer <access_token>`
+- `Content-Type: multipart/form-data`
+- Form field: `file` (image only)
+
+This uploads the file to Cloudinary and updates the current user's `profile_picture` URL immediately.
 
 ### 4) Deploy
 

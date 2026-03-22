@@ -96,6 +96,8 @@ def _event_to_out(
         max_participants=event.max_participants,
         is_private=event.is_private,
         interest_tag=event.interest_tag,
+        cover_image=event.cover_image,
+        media_urls=event.media_urls or [],
         created_by=event.created_by,
         created_at=event.created_at,
         creator=event.creator,

@@ -39,6 +39,8 @@ def create_event(db: Session, data: EventCreate, user_id: uuid.UUID) -> Event:
         max_participants=data.max_participants,
         is_private=data.is_private,
         interest_tag=data.interest_tag,
+        cover_image=data.cover_image,
+        media_urls=data.media_urls or [],
         created_by=user_id,
     )
     db.add(event)

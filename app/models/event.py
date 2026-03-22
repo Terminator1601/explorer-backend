@@ -1,7 +1,7 @@
 import uuid
 from datetime import datetime, timezone
 
-from sqlalchemy import String, Integer, Boolean, DateTime, ForeignKey, Text, Float, Uuid
+from sqlalchemy import String, Integer, Boolean, DateTime, ForeignKey, Text, Float, Uuid, JSON
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from app.db.base import Base
@@ -22,6 +22,8 @@ class Event(Base):
     max_participants: Mapped[int] = mapped_column(Integer, nullable=False, default=50)
     is_private: Mapped[bool] = mapped_column(Boolean, default=False)
     interest_tag: Mapped[str | None] = mapped_column(String(50), nullable=True, index=True)
+    cover_image: Mapped[str | None] = mapped_column(String(500), nullable=True)
+    media_urls: Mapped[list | None] = mapped_column(JSON, nullable=True, default=list)
     created_by: Mapped[uuid.UUID] = mapped_column(
         Uuid, ForeignKey("users.id"), nullable=False
     )

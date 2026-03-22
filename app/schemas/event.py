@@ -1,6 +1,6 @@
 import uuid
 from datetime import datetime
-from typing import Optional
+from typing import Optional, List
 
 from pydantic import BaseModel, model_validator
 
@@ -17,6 +17,8 @@ class EventCreate(BaseModel):
     max_participants: int = 50
     is_private: bool = False
     interest_tag: Optional[str] = None
+    cover_image: Optional[str] = None
+    media_urls: Optional[List[str]] = None
 
     @model_validator(mode="after")
     def validate_times(self):
@@ -36,6 +38,8 @@ class EventOut(BaseModel):
     max_participants: int
     is_private: bool
     interest_tag: Optional[str] = None
+    cover_image: Optional[str] = None
+    media_urls: Optional[List[str]] = None
     created_by: uuid.UUID
     created_at: datetime
     creator: Optional[UserOut] = None

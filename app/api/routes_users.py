@@ -5,7 +5,7 @@ from sqlalchemy.orm import Session
 
 from app.db.session import get_db
 from app.models.user import User
-from app.schemas.user import UserOut, UserUpdate
+from app.schemas.user import UserOut, UserUpdate, UserStats
 from app.services.auth_service import get_current_user
 from app.services import user_service
 from app.services.cloudinary_service import upload_media
@@ -25,6 +25,14 @@ def update_me(
     db: Session = Depends(get_db),
 ):
     return user_service.update_user(db, current_user, body)
+
+
+@router.get("/me/stats", response_model=UserStats)
+def get_my_stats(
+    current_user: User = Depends(get_current_user),
+    db: Session = Depends(get_db),
+):
+    return user_service.get_user_stats(db, current_user.id)
 
 
 @router.post("/me/profile-picture", response_model=UserOut)

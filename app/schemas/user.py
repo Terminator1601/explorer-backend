@@ -44,3 +44,8 @@ class UserOut(BaseModel):
     created_at: datetime
 
     model_config = {"from_attributes": True}
+
+
+class UserStats(BaseModel):
+    events_created: int
+    events_attended: int

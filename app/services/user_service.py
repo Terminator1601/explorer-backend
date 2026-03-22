@@ -4,7 +4,9 @@ from sqlalchemy.orm import Session
 from fastapi import HTTPException, status
 
 from app.models.user import User
-from app.schemas.user import UserCreate, UserUpdate
+from app.models.event import Event
+from app.models.event_participant import EventParticipant, ParticipantStatus
+from app.schemas.user import UserCreate, UserUpdate, UserStats
 from app.services.auth_service import hash_password
 
 
@@ -44,3 +46,16 @@ def update_user(db: Session, user: User, data: UserUpdate) -> User:
     db.commit()
     db.refresh(user)
     return user
+
+
+def get_user_stats(db: Session, user_id: uuid.UUID) -> UserStats:
+    events_created = db.query(Event).filter(Event.created_by == user_id).count()
+    events_attended = (
+        db.query(EventParticipant)
+        .filter(
+            EventParticipant.user_id == user_id,
+            EventParticipant.status == ParticipantStatus.joined,
+        )
+        .count()
+    )
+    return UserStats(events_created=events_created, events_attended=events_attended)

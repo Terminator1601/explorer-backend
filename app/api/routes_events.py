@@ -39,7 +39,7 @@ def create_event(
 def get_nearby_events(
     lat: float = Query(...),
     lng: float = Query(...),
-    radius: float = Query(5000.0, description="Radius in meters"),
+    radius: float = Query(50000.0, description="Radius in meters"),
     interest_tag: Optional[str] = Query(None),
     user_id: Optional[uuid.UUID] = Depends(_get_optional_user_id),
     db: Session = Depends(get_db),

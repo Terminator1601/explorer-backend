@@ -133,6 +133,69 @@ def join_event(db: Session, event_id: uuid.UUID, user_id: uuid.UUID) -> EventPar
     return participant
 
 
+def leave_event(db: Session, event_id: uuid.UUID, user_id: uuid.UUID) -> None:
+    event = get_event_by_id(db, event_id)
+    if event.created_by == user_id:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Event creator cannot leave their own event",
+        )
+    participant = (
+        db.query(EventParticipant)
+        .filter(EventParticipant.event_id == event_id, EventParticipant.user_id == user_id)
+        .first()
+    )
+    if not participant:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Not a participant of this event")
+    db.delete(participant)
+    db.commit()
+
+
+def update_event(db: Session, event_id: uuid.UUID, user_id: uuid.UUID, data) -> Event:
+    event = get_event_by_id(db, event_id)
+    if event.created_by != user_id:
+        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Only the creator can edit this event")
+    update_data = data.model_dump(exclude_unset=True)
+    for field, value in update_data.items():
+        setattr(event, field, value)
+    db.commit()
+    db.refresh(event)
+    return event
+
+
+def delete_event(db: Session, event_id: uuid.UUID, user_id: uuid.UUID) -> None:
+    event = get_event_by_id(db, event_id)
+    if event.created_by != user_id:
+        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Only the creator can delete this event")
+    db.query(EventParticipant).filter(EventParticipant.event_id == event_id).delete()
+    db.delete(event)
+    db.commit()
+
+
+def get_user_events(db: Session, user_id: uuid.UUID, event_type: str) -> list[dict]:
+    now = datetime.now(timezone.utc)
+    if event_type == "created":
+        events = (
+            db.query(Event)
+            .filter(Event.created_by == user_id, Event.end_time >= now)
+            .order_by(Event.start_time)
+            .all()
+        )
+    else:
+        events = (
+            db.query(Event)
+            .join(EventParticipant, EventParticipant.event_id == Event.id)
+            .filter(
+                EventParticipant.user_id == user_id,
+                EventParticipant.status == ParticipantStatus.joined,
+                Event.end_time >= now,
+            )
+            .order_by(Event.start_time)
+            .all()
+        )
+    return [{"event": e, "distance_meters": None} for e in events]
+
+
 def get_participant_count(db: Session, event_id: uuid.UUID) -> int:
     return (
         db.query(EventParticipant)

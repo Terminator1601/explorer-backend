@@ -1,7 +1,7 @@
 import uuid
 from datetime import datetime, timezone
 
-from sqlalchemy import String, Integer, Boolean, DateTime, ForeignKey, Text, Float, Uuid, JSON
+from sqlalchemy import String, Integer, Boolean, DateTime, ForeignKey, Text, Float, Uuid, JSON, Uuid as UuidType
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from app.db.base import Base
@@ -33,3 +33,5 @@ class Event(Base):
 
     creator = relationship("User", back_populates="created_events", lazy="selectin")
     participants = relationship("EventParticipant", back_populates="event", lazy="selectin")
+    comments = relationship("Comment", back_populates="event", lazy="selectin")
+    reviews = relationship("Review", back_populates="event", lazy="selectin")

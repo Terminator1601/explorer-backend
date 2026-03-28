@@ -50,6 +50,8 @@ def update_user(db: Session, user: User, data: UserUpdate) -> User:
 
 
 def get_user_stats(db: Session, user_id: uuid.UUID) -> UserStats:
+    from app.services.follow_service import get_follower_count, get_following_count
+
     events_created = db.query(Event).filter(Event.created_by == user_id).count()
     events_attended = (
         db.query(func.count(func.distinct(EventParticipant.event_id)))
@@ -65,4 +67,6 @@ def get_user_stats(db: Session, user_id: uuid.UUID) -> UserStats:
         events_attended=events_attended,
         total_events_created=events_created,
         total_events_attended=events_attended,
+        followers_count=get_follower_count(db, user_id),
+        following_count=get_following_count(db, user_id),
     )

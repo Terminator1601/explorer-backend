@@ -57,3 +57,5 @@ class UserStats(BaseModel):
     events_attended: int
     total_events_created: int
     total_events_attended: int
+    followers_count: int = 0
+    following_count: int = 0

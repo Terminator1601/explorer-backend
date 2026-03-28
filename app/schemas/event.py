@@ -46,6 +46,9 @@ class EventOut(BaseModel):
     participant_count: int = 0
     distance_meters: Optional[float] = None
     is_user_participant: bool = False
+    is_bookmarked: bool = False
+    average_rating: Optional[float] = None
+    review_count: int = 0
 
     model_config = {"from_attributes": True}
 
@@ -57,8 +60,28 @@ class EventNearbyQuery(BaseModel):
     interest_tag: Optional[str] = None
 
 
+class EventUpdate(BaseModel):
+    title: Optional[str] = None
+    description: Optional[str] = None
+    latitude: Optional[float] = None
+    longitude: Optional[float] = None
+    start_time: Optional[datetime] = None
+    end_time: Optional[datetime] = None
+    max_participants: Optional[int] = None
+    is_private: Optional[bool] = None
+    interest_tag: Optional[str] = None
+    cover_image: Optional[str] = None
+    media_urls: Optional[List[str]] = None
+
+
 class JoinResponse(BaseModel):
     message: str
     event_id: uuid.UUID
     user_id: uuid.UUID
     status: str
+
+
+class LeaveResponse(BaseModel):
+    message: str
+    event_id: uuid.UUID
+    user_id: uuid.UUID

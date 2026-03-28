@@ -1,6 +1,7 @@
 import uuid
 
 from sqlalchemy.orm import Session
+from sqlalchemy import func
 from fastapi import HTTPException, status
 
 from app.models.user import User
@@ -51,11 +52,17 @@ def update_user(db: Session, user: User, data: UserUpdate) -> User:
 def get_user_stats(db: Session, user_id: uuid.UUID) -> UserStats:
     events_created = db.query(Event).filter(Event.created_by == user_id).count()
     events_attended = (
-        db.query(EventParticipant)
+        db.query(func.count(func.distinct(EventParticipant.event_id)))
         .filter(
             EventParticipant.user_id == user_id,
             EventParticipant.status == ParticipantStatus.joined,
         )
-        .count()
+        .scalar()
+        or 0
     )
-    return UserStats(events_created=events_created, events_attended=events_attended)
+    return UserStats(
+        events_created=events_created,
+        events_attended=events_attended,
+        total_events_created=events_created,
+        total_events_attended=events_attended,
+    )

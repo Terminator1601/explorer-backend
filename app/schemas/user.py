@@ -49,3 +49,5 @@ class UserOut(BaseModel):
 class UserStats(BaseModel):
     events_created: int
     events_attended: int
+    total_events_created: int
+    total_events_attended: int

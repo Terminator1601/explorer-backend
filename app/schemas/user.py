@@ -26,6 +26,9 @@ class UserUpdate(BaseModel):
     name: Optional[str] = None
     gender: Optional[GenderEnum] = None
     profile_picture: Optional[str] = None
+    bio: Optional[str] = None
+    interests: Optional[list[str]] = None
+    social_links: Optional[dict[str, str]] = None
 
     @field_validator("profile_picture")
     @classmethod
@@ -41,6 +44,9 @@ class UserOut(BaseModel):
     email: str
     profile_picture: Optional[str] = None
     gender: GenderEnum
+    bio: Optional[str] = None
+    interests: Optional[list[str]] = None
+    social_links: Optional[dict[str, str]] = None
     created_at: datetime
 
     model_config = {"from_attributes": True}
